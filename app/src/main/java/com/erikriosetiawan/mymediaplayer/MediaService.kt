@@ -145,7 +145,6 @@ class MediaService : Service(), MediaPlayerCallback {
             WeakReference(playerCallback)
 
         override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
             when (msg.what) {
                 PLAY -> mediaPlayerCallbackWeakRemoteException.get()?.onPlay()
                 STOP -> mediaPlayerCallbackWeakRemoteException.get()?.onStop()
