@@ -81,13 +81,17 @@ class MediaService : Service(), MediaPlayerCallback {
                 .setUsage(AudioAttributes.USAGE_MEDIA)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build()
-            mMediaPlayer?.setAudioAttributes(attribute)
+            mMediaPlayer?.run {
+                setAudioAttributes(attribute)
+            }
         } else {
-            mMediaPlayer?.setAudioStreamType(AudioManager.STREAM_MUSIC)
+            mMediaPlayer?.run {
+                setAudioStreamType(AudioManager.STREAM_MUSIC)
+            }
         }
         val afd = applicationContext.resources.openRawResourceFd(R.raw.guitar_background)
         try {
-            mMediaPlayer?.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+            mMediaPlayer?.run { setDataSource(afd.fileDescriptor, afd.startOffset, afd.length) }
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -141,13 +145,13 @@ class MediaService : Service(), MediaPlayerCallback {
 
     internal class IncomingHandler(playerCallback: MediaPlayerCallback) :
         Handler(Looper.getMainLooper()) {
-        private val mediaPlayerCallbackWeakRemoteException: WeakReference<MediaPlayerCallback> =
+        private val mediaPlayerCallbackWeakReference: WeakReference<MediaPlayerCallback> =
             WeakReference(playerCallback)
 
         override fun handleMessage(msg: Message) {
             when (msg.what) {
-                PLAY -> mediaPlayerCallbackWeakRemoteException.get()?.onPlay()
-                STOP -> mediaPlayerCallbackWeakRemoteException.get()?.onStop()
+                PLAY -> mediaPlayerCallbackWeakReference.get()?.onPlay()
+                STOP -> mediaPlayerCallbackWeakReference.get()?.onStop()
                 else -> super.handleMessage(msg)
             }
         }
