@@ -22,6 +22,25 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         init()
+
+        binding.btnPlay.setOnClickListener {
+            if (!isReady) {
+                mMediaPlayer?.prepareAsync()
+            } else {
+                if (mMediaPlayer?.isPlaying as Boolean) {
+                    mMediaPlayer?.pause()
+                } else {
+                    mMediaPlayer?.start()
+                }
+            }
+        }
+
+        binding.btnStop.setOnClickListener {
+            if (mMediaPlayer?.isPlaying as Boolean || isReady) {
+                mMediaPlayer?.stop()
+                isReady = false
+            }
+        }
     }
 
     private fun init() {
